@@ -1,6 +1,6 @@
 ---
-name: quality-loop
-description: Kwaliteits-loop die een UI, tekst of deliverable iteratief verbetert via score-tegen-rubric, gerichte fixes en een verse judge per ronde, tot de score plateaut. Gebruik bij "maak dit mooier/beter", "polish deze pagina", "/quality-loop", "haal dit naar niveau", of na een eerste werkende versie die nog niet af voelt. Stopt automatisch bij plateau of 4 rondes; verbrandt geen tokens aan eindeloos rondpoetsen.
+name: polijst-loop
+description: Kwaliteits-loop die een UI, tekst of deliverable iteratief verbetert via score-tegen-rubric, gerichte fixes en een verse judge per ronde, tot de score plateaut. Gebruik bij "maak dit mooier/beter", "polish deze pagina", "/polijst-loop", "haal dit naar niveau", of na een eerste werkende versie die nog niet af voelt. Stopt automatisch bij plateau of 4 rondes; verbrandt geen tokens aan eindeloos rondpoetsen.
 argument-hint: <wat gepolijst moet worden: pagina, component, tekst, deck>
 ---
 
@@ -16,7 +16,7 @@ Stel 5-7 meetbare assen op, toegespitst op het object, elk 1-10 met een omschrev
 - **Tekst/comms**: humanizer-tells weg, de eigen stijl-regels van de gebruiker (indien aanwezig), antwoord-eerst, lengte vs doel, concreet detail.
 - **Code/API**: leesbaarheid, naamgeving, file-groottes, foutafhandeling, geen dode paden.
 
-Schrijf de rubric in `quality-loop-state.md` (scratchpad) met een lege score-historie.
+Schrijf de rubric in `polijst-loop-state.md` (scratchpad) met een lege score-historie.
 
 ## De loop (max 4 rondes)
 

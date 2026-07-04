@@ -8,12 +8,12 @@ Het token-zuinige zusje van [claude-supergoal](https://github.com/robinbril/clau
 
 | Skill | Doel | Stopt bij |
 |---|---|---|
-| `/bugfix-loop` | een falende test, build of bug naar groen | groen, of hard na 5 iteraties |
-| `/feature-loop` | een feature of tasklist story-voor-story bouwen, optioneel in parallelle waves | alles af of BLOCKED |
-| `/quality-loop` | een UI, tekst of deliverable naar niveau via rubric-scores | score-plateau of 4 rondes |
-| `/audit-loop` | onbekende hoeveelheden vondsten: bugs, security, dead code, claims | 2 droge rondes |
-| `/monitor-loop` | externe state bewaken: CI, deploy, DNS, een URL | trigger afgehandeld of max wakes |
-| `/chain-loop` | end-to-end shippen door de loops aan elkaar te rijgen | ACCEPT van de eind-evaluator |
+| `/fix-loop` | een falende test, build of bug naar groen | groen, of hard na 5 iteraties |
+| `/bouw-loop` | een feature of tasklist story-voor-story bouwen, optioneel in parallelle waves | alles af of BLOCKED |
+| `/polijst-loop` | een UI, tekst of deliverable naar niveau via rubric-scores | score-plateau of 4 rondes |
+| `/speur-loop` | onbekende hoeveelheden vondsten: bugs, security, dead code, claims | 2 droge rondes |
+| `/waak-loop` | externe state bewaken: CI, deploy, DNS, een URL | trigger afgehandeld of max wakes |
+| `/keten-loop` | end-to-end shippen door de loops aan elkaar te rijgen | ACCEPT van de eind-evaluator |
 
 ## Waarom loops in plaats van een prompt
 
@@ -44,22 +44,22 @@ git clone https://github.com/robinbril/claude-loops
 cp -r claude-loops/skills/* ~/.claude/skills/
 ```
 
-Daarna zijn ze beschikbaar als slash-commands (`/bugfix-loop`, `/feature-loop`, enzovoort) in elke Claude Code-sessie.
+Daarna zijn ze beschikbaar als slash-commands (`/fix-loop`, `/bouw-loop`, enzovoort) in elke Claude Code-sessie.
 
 ## Welke loop pak je
 
 De vuistregel: de smalste loop die past.
 
-- Iets is stuk en je hebt (of maakt) een herhaalbaar failing command: `/bugfix-loop`.
-- Het werkt maar voelt niet af: `/quality-loop`.
-- Er moet iets gebouwd worden dat in stories op te knippen is: `/feature-loop`.
-- Je weet niet wat er allemaal mis is en wilt het complete beeld: `/audit-loop` (vindt en bewijst, fixt niet; de vondsten gaan door naar bugfix- of feature-loop).
-- Je wacht op iets buiten de sessie (CI, deploy, DNS): `/monitor-loop`.
-- Een niet-triviale taak end-to-end zonder babysitten: `/chain-loop`, die recon, plan, bouw, polish en fix aan elkaar rijgt en afsluit met een onafhankelijke evaluator die tegen de oorspronkelijke opdracht toetst.
+- Iets is stuk en je hebt (of maakt) een herhaalbaar failing command: `/fix-loop`.
+- Het werkt maar voelt niet af: `/polijst-loop`.
+- Er moet iets gebouwd worden dat in stories op te knippen is: `/bouw-loop`.
+- Je weet niet wat er allemaal mis is en wilt het complete beeld: `/speur-loop` (vindt en bewijst, fixt niet; de vondsten gaan door naar fix- of bouw-loop).
+- Je wacht op iets buiten de sessie (CI, deploy, DNS): `/waak-loop`.
+- Een niet-triviale taak end-to-end zonder babysitten: `/keten-loop`, die recon, plan, bouw, polish en fix aan elkaar rijgt en afsluit met een onafhankelijke evaluator die tegen de oorspronkelijke opdracht toetst.
 
-## Chain-loop vs supergoal
+## Keten-loop vs supergoal
 
-Beide eindigen pas als iets onafhankelijks het werk bewijst tegen de oorspronkelijke opdracht. Het verschil is de overhead per fase: supergoal draait per fase een volledige evaluator plus een adviesraad-gate plus retry-met-rollback, en interviewt je uitgebreid in de planfase. Chain-loop doet een evaluator-pass per gate, een herstelronde bij REJECT, en stelt hooguit een scherpe vraag als de scope ambigu is. Grofweg: supergoal voor het werk van een dag, chain-loop voor het werk van een middag.
+Beide eindigen pas als iets onafhankelijks het werk bewijst tegen de oorspronkelijke opdracht. Het verschil is de overhead per fase: supergoal draait per fase een volledige evaluator plus een adviesraad-gate plus retry-met-rollback, en interviewt je uitgebreid in de planfase. Keten-loop doet een evaluator-pass per gate, een herstelronde bij REJECT, en stelt hooguit een scherpe vraag als de scope ambigu is. Grofweg: supergoal voor het werk van een dag, keten-loop voor het werk van een middag.
 
 ## Licentie
 

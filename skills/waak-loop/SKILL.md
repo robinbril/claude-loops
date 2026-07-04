@@ -1,6 +1,6 @@
 ---
-name: monitor-loop
-description: Babysit-loop voor externe state die de harness niet zelf trackt: een CI-run, deploy, DNS-propagatie, URL-health, mailbox of kanban-kolom. Pollt cache-bewust via ScheduleWakeup, voert bij verandering een vooraf afgesproken actie uit en stopt bij het eindcriterium. Gebruik bij "hou de deploy in de gaten", "wacht tot de CI groen is en ga dan door", "check elk kwartier of X", "/monitor-loop", of elke wacht-op-extern situatie. Verbrandt per wake precies een check, geen context.
+name: waak-loop
+description: Babysit-loop voor externe state die de harness niet zelf trackt: een CI-run, deploy, DNS-propagatie, URL-health, mailbox of kanban-kolom. Pollt cache-bewust via ScheduleWakeup, voert bij verandering een vooraf afgesproken actie uit en stopt bij het eindcriterium. Gebruik bij "hou de deploy in de gaten", "wacht tot de CI groen is en ga dan door", "check elk kwartier of X", "/waak-loop", of elke wacht-op-extern situatie. Verbrandt per wake precies een check, geen context.
 argument-hint: <wat bewaken + wat te doen bij verandering>
 ---
 
@@ -10,7 +10,7 @@ Jij bewaakt externe state en handelt bij verandering. Opdracht: $ARGUMENTS
 
 ## Stap 0: contract (eenmalig, voor de eerste slaap)
 
-Leg vier dingen vast in `monitor-loop-state.md` (scratchpad):
+Leg vier dingen vast in `waak-loop-state.md` (scratchpad):
 
 1. **De check**: een zo goedkoop mogelijke enkele call (gh run view, curl -s, een MCP-tool, een grep op een logfile). Geen browser, geen screenshots als een API-call bestaat.
 2. **De trigger**: welke waarde-verandering telt (status != in_progress, HTTP 200, record zichtbaar).
@@ -34,7 +34,7 @@ Kies de ScheduleWakeup-delay op wat je bewaakt, nooit op een rond getal:
 
 - Snel-veranderend (CI-run van ~10 min, deploy): **270s**, blijft binnen de prompt-cache-TTL.
 - Traag (DNS, mailbox, dagelijkse job): **1200-1800s**.
-- Nooit 300s (cache-miss zonder de wachttijd te benutten). Geef in de `prompt`-parameter dezelfde /monitor-loop-opdracht verbatim terug en zet in `reason` concreet wat je bewaakt.
+- Nooit 300s (cache-miss zonder de wachttijd te benutten). Geef in de `prompt`-parameter dezelfde /waak-loop-opdracht verbatim terug en zet in `reason` concreet wat je bewaakt.
 
 ## Guardrails
 

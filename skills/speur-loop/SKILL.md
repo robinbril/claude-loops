@@ -1,6 +1,6 @@
 ---
-name: audit-loop
-description: Loop-until-dry vind-loop voor onbekende hoeveelheden: bugs, security-issues, dead code, inconsistenties of research-claims. Rondes van parallelle finders met verschillende lenzen, dedup, adversarial verificatie, en stoppen na 2 droge rondes. Gebruik bij "audit dit", "vind alle bugs", "check de hele codebase op X", "/audit-loop", of research waar een keer zoeken de staart mist. Vindt en bewijst; fixt zelf niks (handoff naar /bugfix-loop of /feature-loop).
+name: speur-loop
+description: Loop-until-dry vind-loop voor onbekende hoeveelheden: bugs, security-issues, dead code, inconsistenties of research-claims. Rondes van parallelle finders met verschillende lenzen, dedup, adversarial verificatie, en stoppen na 2 droge rondes. Gebruik bij "audit dit", "vind alle bugs", "check de hele codebase op X", "/speur-loop", of research waar een keer zoeken de staart mist. Vindt en bewijst; fixt zelf niks (handoff naar /fix-loop of /bouw-loop).
 argument-hint: <wat te vinden: bugs, security, dead code, claims, ...>
 ---
 
@@ -15,7 +15,7 @@ Onbekende-hoeveelheid-discovery stopt niet bij een teller maar bij droogte: pas 
 ## Setup (eenmalig)
 
 - Bepaal 3-4 **lenzen** passend bij het doel. Code-audit: correctness, security, performance, consistency. Grote repo: per-directory of per-subsystem. Research: per bron-type (docs, code, issues, web).
-- Maak in de scratchpad `audit-loop-state.md`: doel, lenzen, lege `seen`-lijst (key = file:line of claim-hash), lege confirmed-lijst.
+- Maak in de scratchpad `speur-loop-state.md`: doel, lenzen, lege `seen`-lijst (key = file:line of claim-hash), lege confirmed-lijst.
 
 ## De ronde (via de Workflow-tool)
 
@@ -34,4 +34,4 @@ Deze skill-invocatie is je opt-in voor Workflow. Per ronde:
 
 ## Eindrapport
 
-Gerankte confirmed-lijst (severity eerst) met per item: wat, waar (`file:line`), bewijs, en de aanbevolen vervolg-loop (/bugfix-loop voor bugs, /feature-loop voor structureel werk). Gesneuvelde plausibele-maar-weerlegde findings in een aparte korte sectie, zodat niemand ze opnieuw aandraagt.
+Gerankte confirmed-lijst (severity eerst) met per item: wat, waar (`file:line`), bewijs, en de aanbevolen vervolg-loop (/fix-loop voor bugs, /bouw-loop voor structureel werk). Gesneuvelde plausibele-maar-weerlegde findings in een aparte korte sectie, zodat niemand ze opnieuw aandraagt.

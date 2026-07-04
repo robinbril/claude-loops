@@ -1,6 +1,6 @@
 ---
-name: feature-loop
-description: Story-loop die een feature of tasklist story-voor-story bouwt met een verse sonnet-worker per story en verificatie door de orchestrator. Ondersteunt parallelle waves via de Workflow-tool voor onafhankelijke stories. Gebruik bij "bouw dit", "werk de tasklist af", "/feature-loop", "implementeer deze stories", of een feature die opgeknipt kan worden. Het token-zuinige bouw-hart: plan zwaar (eenmalig), voer licht uit, verifieer per story precies een keer.
+name: bouw-loop
+description: Story-loop die een feature of tasklist story-voor-story bouwt met een verse sonnet-worker per story en verificatie door de orchestrator. Ondersteunt parallelle waves via de Workflow-tool voor onafhankelijke stories. Gebruik bij "bouw dit", "werk de tasklist af", "/bouw-loop", "implementeer deze stories", of een feature die opgeknipt kan worden. Het token-zuinige bouw-hart: plan zwaar (eenmalig), voer licht uit, verifieer per story precies een keer.
 argument-hint: <feature-omschrijving of pad naar tasklist>
 ---
 
@@ -10,17 +10,17 @@ Jij bent de orchestrator. Je bouwt nooit zelf, je plant eenmalig, spawnt per sto
 
 ## Stap 0: plan (de enige dure stap)
 
-Is er al een tasklist (pad meegegeven of `feature-loop/plan.md` bestaat), lees die. Anders maak je hem zelf in de hoofdsessie (Fable, dit mag kosten):
+Is er al een tasklist (pad meegegeven of `bouw-loop/plan.md` bestaat), lees die. Anders maak je hem zelf in de hoofdsessie (Fable, dit mag kosten):
 
 - Recon: lees de relevante code, snap de conventies.
 - Knip de taak in stories van elk max ~1 worker-context: per story een titel, 2-5 zinnen spec, **een toetsbaar acceptatiecriterium** (command + verwacht resultaat, of deliverable-pad, of observeerbaar gedrag), en optioneel `dependsOn`.
-- Schrijf naar `feature-loop/plan.md` (checkboxes) plus `feature-loop/progress.md` (leeg, voor learnings).
+- Schrijf naar `bouw-loop/plan.md` (checkboxes) plus `bouw-loop/progress.md` (leeg, voor learnings).
 
 Zwak criterium ("werkt goed") is verboden; herschrijf tot ja/nee-toetsbaar.
 
 ## Per story (sequentieel, default)
 
-1. **Worker** (Agent, `model: "sonnet"`, verse context). Prompt bevat: de story + acceptatiecriterium, de learnings uit `feature-loop/progress.md`, relevante file-paths uit je recon, en de huisregels: chirurgische diff, bestaande stijl matchen, niet committen, geen scope buiten de story.
+1. **Worker** (Agent, `model: "sonnet"`, verse context). Prompt bevat: de story + acceptatiecriterium, de learnings uit `bouw-loop/progress.md`, relevante file-paths uit je recon, en de huisregels: chirurgische diff, bestaande stijl matchen, niet committen, geen scope buiten de story.
 2. **Verificatie door jou**: voer het acceptatiecriterium zelf uit. Command herdraaien met eigen exit code, deliverable zelf lezen, of bij UI de preview-tools gebruiken (snapshot/inspect, niet alleen screenshot). Het worker-rapport is geen bewijs.
 3. Pass: vink af in `plan.md`, schrijf herbruikbare learnings (patronen, valkuilen, commands) naar `progress.md`, volgende story.
 4. Fail: een retry met de failure-output erbij. Tweede fail: markeer `BLOCKED` met reden, ga door met stories die er niet van afhangen.
