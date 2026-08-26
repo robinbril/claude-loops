@@ -1,6 +1,7 @@
 ---
 name: bouw-loop
-description: Story-loop die een feature of tasklist story-voor-story bouwt met een verse sonnet-worker per story en verificatie door de orchestrator. Ondersteunt parallelle waves via de Workflow-tool voor onafhankelijke stories. Gebruik bij "bouw dit", "werk de tasklist af", "/bouw-loop", "implementeer deze stories", of een feature die opgeknipt kan worden. Het token-zuinige bouw-hart: plan zwaar (eenmalig), voer licht uit, verifieer per story precies een keer.
+description: >-
+  Story-loop die een feature of tasklist story-voor-story bouwt met een verse sonnet-worker per story en verificatie door de orchestrator. Ondersteunt parallelle waves via de Workflow-tool voor onafhankelijke stories. Gebruik bij "bouw dit", "werk de tasklist af", "/bouw-loop", "implementeer deze stories", of een feature die opgeknipt kan worden. Het token-zuinige bouw-hart: plan zwaar (eenmalig), voer licht uit, verifieer per story precies een keer. Voor een compleet einddoel inclusief polish-, fix- en eindverificatiefases is keten-loop de ingang; bouw-loop is de bouwfase daarbinnen of een losse feature/tasklist.
 argument-hint: <feature-omschrijving of pad naar tasklist>
 ---
 
@@ -8,22 +9,39 @@ argument-hint: <feature-omschrijving of pad naar tasklist>
 
 Jij bent de orchestrator. Je bouwt nooit zelf, je plant eenmalig, spawnt per story een verse worker en verifieert met eigen tool-output. De taak: $ARGUMENTS
 
+## Hervat-check (eerst)
+
+Bestaat `.loops/bouw/plan.md` met open (niet-afgevinkte) stories en `Status: IN_PROGRESS`? Dan draait er al een bouw: lees `plan.md` + `progress.md`, vat in een regel samen wat af is, en hervat bij de eerste open story. Plan niet opnieuw. Anders: verse run, ga naar Stap 0.
+
 ## Stap 0: plan (de enige dure stap)
 
-Is er al een tasklist (pad meegegeven of `bouw-loop/plan.md` bestaat), lees die. Anders maak je hem zelf in de hoofdsessie (Fable, dit mag kosten):
+Is er al een tasklist (pad meegegeven of `.loops/bouw/plan.md` bestaat), lees die. Anders maak je hem zelf in de hoofdsessie (Fable, dit mag kosten):
 
 - Recon: lees de relevante code, snap de conventies.
-- Knip de taak in stories van elk max ~1 worker-context: per story een titel, 2-5 zinnen spec, **een toetsbaar acceptatiecriterium** (command + verwacht resultaat, of deliverable-pad, of observeerbaar gedrag), en optioneel `dependsOn`.
-- Schrijf naar `bouw-loop/plan.md` (checkboxes) plus `bouw-loop/progress.md` (leeg, voor learnings).
+- Knip de taak in stories van elk max ~300 gewijzigde regels over max ~4 bestanden (past in een worker-context). Per story: een titel, 2-5 zinnen spec, **een toetsbaar acceptatiecriterium** (command + verwacht resultaat, of deliverable-pad, of observeerbaar gedrag), en optioneel `dependsOn: <story-nrs>`.
+- Schrijf naar `.loops/bouw/plan.md` (checkboxes + het kop-blok hieronder) plus `.loops/bouw/progress.md` (leeg, voor learnings).
 
 Zwak criterium ("werkt goed") is verboden; herschrijf tot ja/nee-toetsbaar.
 
+## State-file vorm (`plan.md`)
+
+```
+Status: IN_PROGRESS
+Doel: <feature/tasklist>
+Cap: <n> stories, elk max 2 retries | Budget: <"+Nk"-directief of geen>
+
+## Stories
+1. [ ] <titel> | criterium: <command -> verwacht> | dependsOn: -
+2. [ ] <titel> | criterium: <deliverable-pad bestaat> | dependsOn: 1
+...
+```
+
 ## Per story (sequentieel, default)
 
-1. **Worker** (Agent, `model: "sonnet"`, verse context). Prompt bevat: de story + acceptatiecriterium, de learnings uit `bouw-loop/progress.md`, relevante file-paths uit je recon, en de huisregels: chirurgische diff, bestaande stijl matchen, niet committen, geen scope buiten de story.
+1. **Worker** (Agent, `model: "sonnet"`, verse context). Prompt bevat: de story + acceptatiecriterium, de learnings uit `.loops/bouw/progress.md`, relevante file-paths uit je recon, en de huisregels: chirurgische diff, bestaande stijl matchen, niet committen, geen scope buiten de story.
 2. **Verificatie door jou**: voer het acceptatiecriterium zelf uit. Command herdraaien met eigen exit code, deliverable zelf lezen, of bij UI de preview-tools gebruiken (snapshot/inspect, niet alleen screenshot). Het worker-rapport is geen bewijs.
 3. Pass: vink af in `plan.md`, schrijf herbruikbare learnings (patronen, valkuilen, commands) naar `progress.md`, volgende story.
-4. Fail: een retry met de failure-output erbij. Tweede fail: markeer `BLOCKED` met reden, ga door met stories die er niet van afhangen.
+4. Fail: een retry met de failure-output erbij. Tweede fail: markeer `BLOCKED` met reden, ga door met stories die er niet van afhangen. (Retry-limiet 2, bewust lager dan fix-loops 5: een story is klein en gespecificeerd; blijft hij vastzitten, dan is de spec fout, niet de uitvoering.)
 
 ## Waves (parallel, wanneer stories onafhankelijk zijn)
 
@@ -31,6 +49,7 @@ Zijn er 3+ stories zonder onderlinge `dependsOn` en zonder file-overlap, draai z
 
 ## Stop en afronding
 
-- Alle stories af of BLOCKED: stop. Nooit doorgaan met verzinnen van extra werk.
-- Eindcheck: draai eenmaal de volledige suite + typecheck.
-- Geen commits zonder signaal. Eindig met: wat af is, wat BLOCKED (en waarom), bewijs per story (command + resultaat), en een voorstel van 3-7 thematische commit-groepen (commit-discipline).
+- Alle stories af of BLOCKED, of het budget zakt onder ~50k: stop. Nooit doorgaan met verzinnen van extra werk.
+- Eindcheck: draai eenmaal de volledige suite + typecheck. **Rood door het bouwwerk: draai het fix-loop-patroon erop (max 3 iteraties) voor je afrondt**, niet doorschuiven naar de gebruiker.
+- **Onafhankelijke keuring (verplicht voor DONE).** Je eigen verificatie vangt geen scope-drift en geen half-gedekte claim. Spawn vóór `Status: DONE` een VERSE, onafhankelijke keurder-subagent met alleen lees-tools (Read/Grep/Glob/Bash), geef hem je klaar-claim plus de acceptatiecriteria, en laat hem het ARTEFACT tegen de claim ijken met de opdracht te bewijzen dat het NIET klaar is (scope-drift telt als gat). Vindt hij een gat, dan gaat dat als nieuwe story terug de loop in; niet afronden. Pas bij een schoon oordeel mag DONE.
+- Zet `Status: DONE` (of `BLOCKED`) in `plan.md`. Geen commits zonder signaal. Eindig met: wat af is, wat BLOCKED (en waarom), bewijs per story (command + resultaat), en een voorstel van 3-7 thematische commit-groepen (commit-discipline).
